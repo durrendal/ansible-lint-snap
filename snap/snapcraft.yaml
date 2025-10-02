@@ -1,0 +1,72 @@
+title: ansible-lint
+contact:
+  - durrendal@lambdacreate.com
+issues:
+  - https://github.com/durrendal/ansible-lint-snap
+source-code:
+  - https://github.com/ansible/ansible-lint
+website:
+  - https://ansible-lint.readthedocs.io/
+name: durrendal-ansible-lint
+base: core24
+version: v25.9.1
+license: GPL-3.0
+
+summary: Best practices checker for Ansible
+description: |
+  ansible-lint checks playbooks for practices and behavior that could 
+  potentially be improved. It is heavily community-driven and extensively 
+  configurable to fit various use cases.
+  
+  Features:
+  - Checks Ansible playbooks, roles, and task files for best practices
+  - Extensive rule set covering common issues and anti-patterns
+  - Configurable rules and linting options
+  - Support for custom rule directories
+  - Multiple output formats (SARIF, JSON, parseable)
+  - Integration with pre-commit hooks and CI/CD pipelines
+  - Colored terminal output
+  - Auto-fix capabilities for certain rules
+  - Support for Ansible Galaxy collections
+
+grade: stable
+confinement: strict
+
+parts:
+  ansible-lint:
+    plugin: python
+    source: https://github.com/ansible/ansible-lint.git
+    source-type: git
+    source-tag: $SNAPCRAFT_PROJECT_VERSION
+    build-packages:
+      - python3-dev
+      - python3-pip
+      - python3-setuptools
+      - python3-wheel
+      - build-essential
+      - git
+      - libffi-dev
+      - libssl-dev
+    stage-packages:
+      - python3-minimal
+      - git
+    override-build: |
+      craftctl default
+      if [ -f $CRAFT_PART_INSTALL/bin/ansible-lint ]; then
+        chmod +x $CRAFT_PART_INSTALL/bin/ansible-lint
+      fi
+
+apps:
+  ansible-lint:
+    command: bin/ansible-lint
+    environment:
+      PATH: $SNAP/bin:$SNAP/usr/bin:$PATH
+      PYTHONPATH: $SNAP/lib/python3.12/site-packages:$SNAP/usr/lib/python3/dist-packages
+      HOME: $SNAP_USER_COMMON
+      ANSIBLE_HOME: $SNAP_USER_COMMON/.ansible
+      ANSIBLE_LOCAL_TEMP: $SNAP_USER_COMMON/.ansible/tmp
+      ANSIBLE_REMOTE_TEMP: $SNAP_USER_COMMON/.ansible/tmp
+    plugs:
+      - home
+      - removable-media
+      - network
