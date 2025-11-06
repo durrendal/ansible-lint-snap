@@ -9,7 +9,7 @@ website:
   - https://ansible-lint.readthedocs.io/
 name: durrendal-ansible-lint
 base: core24
-version: v25.9.1
+version: v25.9.2
 license: GPL-3.0
 
 summary: Best practices checker for Ansible
